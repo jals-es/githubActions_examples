@@ -1,0 +1,33 @@
+name: environment_test_execution
+
+on:
+  push:
+    branches: [ nodejs_environment_job ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node: [10, 12]
+
+    steps:
+    - name: Obtencion del codigo
+      uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with: 
+        node-version: ${{ matrix.node }}
+    - uses: github/super-linter@v3
+      env:
+        DEFAULT_BRANCH: nodejs_linter_job
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        LINTER_RULES_PATH: /
+        JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
+        VALIDATE_JAVASCRIPT_ES: true
+    - uses: adeloyedeji/github-actions-hello@v1.0
+      env: 
+        DESTINATION_PERSON: "2DAW"
+      with:
+        who-to-greet: ${{ env.DESTINATION_PERSON }}
